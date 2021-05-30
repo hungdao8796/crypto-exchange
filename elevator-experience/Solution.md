@@ -53,4 +53,4 @@ We may improve the experience in other ways to serve the special cases:
 - Adding up elevators for different classes or different floors
 - etc...
 
-However, between those passengers with same priority, elevators must still serve in "First come first serve" order
+However, between those passengers with same priority, elevators must still serve in "First come, first served" order
