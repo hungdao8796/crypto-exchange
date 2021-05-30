@@ -19,8 +19,12 @@ const portfolio : {} = {};
 // Current portfolio in USD
 const portfolioInUsd : {} = {};
 
-// Calculate the portfolio based on each transaction represented by data row in csv file
-const onHandlingSource = (data: Array<string>, predefinedTokens : Array<string> = [], predefinedDate: undefined | number) => {
+// Calculate the portfolio tokens based on each transaction represented by data row in csv file
+const onHandlingSource = (
+  data: Array<string>,
+  predefinedTokens : Array<string> = [],
+  predefinedDate: undefined | number
+) => {
   if (!hasHeader) {
     // First row must always be the list headers
     // -> represent the data type of each transaction (token name, transaction type, amount, timestamp)
@@ -46,7 +50,7 @@ const onHandlingSource = (data: Array<string>, predefinedTokens : Array<string> 
     // Check if current transaction timestamp before the desired portfolio date
     const isTransactionDateIncluded = predefinedDate === undefined || predefinedDate >= mappedData[DATA_SOURCE_NAME.TIMESTAMP];
 
-    // If the current transaction satisfy the predefined conditions, calculate the current transaction to portfolio
+    // If the current transaction satisfies the predefined conditions, calculate the current transaction to portfolio
     if (isTokenIncluded && isTransactionDateIncluded) {
       if (portfolio[tokenName] === undefined) {
         portfolio[tokenName] = 0.0;
@@ -67,6 +71,7 @@ const onHandlingSource = (data: Array<string>, predefinedTokens : Array<string> 
   }
 };
 
+// After finish reading all the transactions, calculate the value of owned tokens to USD
 const onFinishFileReading = () => {
   // Get list token in portfolio
   const ownedTokens = Object.keys(portfolio).join(',');
@@ -75,7 +80,7 @@ const onFinishFileReading = () => {
   axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${ownedTokens}&tsyms=USD`)
     .then(({ data }) => {
       Object.keys(portfolio).forEach((token) => {
-        portfolioInUsd[token] = portfolio[token] * data[token]['USD'];
+        portfolioInUsd[token] = `${(portfolio[token] * data[token]['USD']).toFixed(4)} (USD)`;
       });
 
       // log the portfolio out
