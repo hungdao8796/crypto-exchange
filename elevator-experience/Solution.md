@@ -1,4 +1,4 @@
-#Background
+# Background
 ```
 Imagine you're working in an elevator company
 and you are asked to improve the elevator experience.
