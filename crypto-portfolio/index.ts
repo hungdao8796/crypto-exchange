@@ -1,14 +1,37 @@
+#!/usr/bin/env node
 import dotenv from 'dotenv';
 import parse from 'csv-parse';
 import fs from 'fs';
 import axios from 'axios';
 import moment from 'moment';
+// @ts-ignore
+import yargs from 'yargs';
 import { TRANSACTION_TYPES, DATA_SOURCE_NAME } from './constants.js';
 
 dotenv.config();
 
-const dataLink : string = process.env.CSV_SOURCE || 'data/transactions.csv';
-const appArguments : Array<string> = process.argv.slice(2);
+// const dataLink : string = process.env.CSV_SOURCE || 'data/transactions.csv';
+const appArguments : {
+  token?: string,
+  date?: string,
+  sourcePath?: string
+} = yargs
+  .option("t", {
+    alias: "token",
+    describe: "List Token Name",
+    type: "string"
+  })
+  .option("d", {
+    alias: "date",
+    describe: "Specific date to get the portfolio. Date might match the [RFC 2822 Date time]",
+    type: "string"
+  })
+  .options("s", {
+    alias: "sourcePath",
+    describe: "Path to the transactions list sources",
+    type: "string"
+  })
+  .argv;
 
 // Check if we have headers or not, so that we can start handling data source
 let hasHeader : boolean = false;
@@ -89,22 +112,12 @@ const onFinishFileReading = () => {
 };
 
 export default (() => {
-  // map the parameter from command line
-  const query : {
-    token?: string,
-    date?: string | number
-  } = appArguments.reduce((finalQuery, currentQuery) => {
-    const [ key, value ] = currentQuery.split('=');
-    return {
-      ...finalQuery,
-      [key]: value
-    }
-  }, {});
 
-  const predefinedTokens = query.token ? query.token.split(',') : [];
-  const predefinedDate = query.date !== undefined ? Number(moment(query.date).format('x')) : undefined;
+  const predefinedTokens = appArguments.token ? appArguments.token.split(',') : [];
+  const predefinedDate = appArguments.date !== undefined ? Number(moment(appArguments.date).format('x')) : undefined;
 
   // Start reading data source file
+  const dataLink = appArguments.sourcePath || process.env.CSV_SOURCE || 'data/transactions.csv';
   fs.createReadStream(dataLink)
   .pipe(parse())
   .on('data', (row : Array<string>) => {

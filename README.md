@@ -1,4 +1,4 @@
-# Question 2 - Get Crypto Portfolio
+# Get Crypto Portfolio
 Download your transactions csv file to `data` folder with name `transactions.csv` <br>
 or define file path in `ENV.CSV_SOURCE` <br>
 
@@ -25,33 +25,44 @@ npm install
 npm run build
 ```
 
+Then install this app to global
+```
+npm install -g
+```
+
 Get your portfolio in USD without specific token or date
 ```
-npm run start
+crypto-exchange
 ```
 
+For usage information, try
+```
+crypto-exchange --help
+```
+
+# Example
 Get your portfolio in USD with specific tokens, might include many tokens that separated by commas
 ```
-npm run start token={TOKEN_LIST}
+crypto-exchange -t {TOKEN_LIST}
 
 e.g:
-npm run start token='XRP,ETH'
-npm run start token='BTC'
+crypto-exchange -t 'XRP,ETH'
+crypto-exchange -t 'BTC'
 ```
 
 Get your portfolio in USD with specific date
 Date might match the [RFC 2822 Date time](https://datatracker.ietf.org/doc/html/rfc2822#section-3.3)
 ```
-npm run start date={DATE}
+crypto-exchange -d {DATE}
 
 e.g:
-npm run start date='1996-08-07'
+crypto-exchange -d '1996-08-07'
 ```
 
 Get your portfolio with specific tokens and date
 ```
-npm run start token={TOKEN_LIST} date={DATE}
+crypto-exchange -t {TOKEN_LIST} -d {DATE}
 
 e.g:
-npm run start token='XRP,ETH'  date='1996-08-07'
+crypto-exchange -t 'XRP,ETH'  -d '1996-08-07'
 ```
